@@ -19,17 +19,27 @@ export const generateStaticParams = async () => {
   return posts.map(post => ({ slug: post.slug }))
 }
 
-export async function generateMetadata({ params, searchparams }) {
+export async function generateMetadata(props) {
+  const params = await props.params
+
+  const { searchparams } = props
+
   const id = params?.slug ? ' * ' + params?.slug : ''
   return {
     title: `The Bubbly Baker ${id.replaceAll('_', ' ')}`,
   }
 }
 
-export default function RecipePage(props) {
-  const slug = props.params.slug
+export default async function RecipePage(props) {
+  const slug = (await props.params).slug
   const post = getPostContent(slug)
   console.log(post)
 
-  return <div>Hello World</div>
+  return (
+    <main>
+      <article>
+        <Markdown>{post.content}</Markdown>
+      </article>
+    </main>
+  )
 }
